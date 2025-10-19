@@ -45,15 +45,15 @@ class _BMICalculatorState extends State<BMICalculator>
   double bmi = 0;
   String gender = "Laki-laki";
 
-  late AnimationController _inputController;
-  late AnimationController _resultController;
-  late AnimationController _bgController;
+  late final AnimationController _inputController;
+  late final AnimationController _resultController;
+  late final AnimationController _bgController;
 
-  late Animation<double> _inputOffset;
-  late Animation<double> _inputFade;
-  late Animation<double> _resultOffset;
-  late Animation<double> _resultFade;
-  late Animation<double> _bgFade;
+  late final Animation<double> _inputOffset;
+  late final Animation<double> _inputFade;
+  late final Animation<double> _resultOffset;
+  late final Animation<double> _resultFade;
+  late final Animation<double> _bgFade;
 
   @override
   void initState() {
@@ -98,7 +98,7 @@ class _BMICalculatorState extends State<BMICalculator>
     );
   }
 
-  void calculateBMI() async {
+  Future<void> calculateBMI() async {
     final height = double.tryParse(heightController.text);
     final weight = double.tryParse(weightController.text);
 
@@ -116,7 +116,7 @@ class _BMICalculatorState extends State<BMICalculator>
     }
   }
 
-  void reset() async {
+  Future<void> reset() async {
     await Future.wait([
       _resultController.reverse(),
       _bgController.reverse(),
@@ -136,182 +136,184 @@ class _BMICalculatorState extends State<BMICalculator>
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // --- tempat input inputan ---
+          // --- input utama ---
           Center(
-            child: AnimatedBuilder(
-              animation: _inputController,
-              builder: (context, child) {
-                return Transform.translate(
-                  offset: Offset(0, _inputOffset.value),
-                  child: Opacity(
-                    opacity: _inputFade.value,
-                    child: child,
+            child: RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _inputController,
+                builder: (context, child) {
+                  return Transform.translate(
+                    offset: Offset(0, _inputOffset.value),
+                    child: Opacity(
+                      opacity: _inputFade.value,
+                      child: child,
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Kalkulator BMI",
+                        style: GoogleFonts.inter(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _genderButton("Laki-laki", Icons.male),
+                          const SizedBox(width: 20),
+                          _genderButton("Perempuan", Icons.female),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      TextField(
+                        controller: heightController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: "Tinggi Badan (cm)",
+                          labelStyle: GoogleFonts.inter(color: Colors.black),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: weightController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: "Berat Badan (kg)",
+                          labelStyle: GoogleFonts.inter(color: Colors.black),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        onPressed: calculateBMI,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 60, vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: const Text(
+                          "Hitung",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Kalkulator BMI",
-                      style: GoogleFonts.inter(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-
-                    // --- milih gender bosss ---
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _genderButton("Laki-laki", Icons.male),
-                        const SizedBox(width: 20),
-                        _genderButton("Perempuan", Icons.female),
-                      ],
-                    ),
-                    const SizedBox(height: 30),
-
-                    // --- input inputan ngisi ini mah ---
-                    TextField(
-                      controller: heightController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: "Tinggi Badan (cm)",
-                        labelStyle: GoogleFonts.inter(color: Colors.black),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: weightController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: "Berat Badan (kg)",
-                        labelStyle: GoogleFonts.inter(color: Colors.black),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    ElevatedButton(
-                      onPressed: calculateBMI,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 60, vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      child: const Text(
-                        "Hitung",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ),
           ),
 
-          // --- animasi buat background fadeinfadeout ---
+          // --- background animasi ---
           if (showResult)
-            AnimatedBuilder(
-              animation: _bgFade,
-              builder: (context, child) {
-                return Opacity(
-                  opacity: _bgFade.value,
-                  child: Container(
-                    color: Colors.indigo.shade400.withOpacity(0.85),
-                  ),
-                );
-              },
+            RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _bgFade,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _bgFade.value,
+                    child: Container(
+                      color: Colors.indigo.shade400.withOpacity(0.85),
+                    ),
+                  );
+                },
+              ),
             ),
 
-          // --- hasil make animasi ease out ---
+          // --- hasil BMI ---
           if (showResult)
-            AnimatedBuilder(
-              animation: _resultController,
-              builder: (context, child) {
-                return Opacity(
-                  opacity: _resultFade.value,
-                  child: Transform.translate(
-                    offset: Offset(0, _resultOffset.value),
-                    child: child,
-                  ),
-                );
-              },
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "Hasil BMI (${gender})",
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+            RepaintBoundary(
+              child: AnimatedBuilder(
+                animation: _resultController,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _resultFade.value,
+                    child: Transform.translate(
+                      offset: Offset(0, _resultOffset.value),
+                      child: child,
                     ),
-                    const SizedBox(height: 20),
-                    TweenAnimationBuilder<double>(
-                      tween: Tween(begin: 0, end: bmi),
-                      duration: const Duration(milliseconds: 1200),
-                      curve: Curves.easeInOutCubic,
-                      builder: (context, value, _) {
-                        return Text(
-                          value.toStringAsFixed(1),
-                          style: GoogleFonts.inter(
-                            fontSize: 72,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(
-                                offset: const Offset(0, 2),
-                                blurRadius: 10,
-                                color: Colors.black26,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      bmi < 18.5
-                          ? "Kurus"
-                          : (bmi < 24.9
-                              ? "Normal"
-                              : (bmi < 29.9 ? "Gemuk" : "Obesitas")),
-                      style: GoogleFonts.inter(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white70,
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-                    ElevatedButton(
-                      onPressed: reset,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.indigo.shade700,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                  );
+                },
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Hasil BMI ($gender)",
+                        style: GoogleFonts.inter(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
-                      child: const Text("Hitung Ulang"),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0, end: bmi),
+                        duration: const Duration(milliseconds: 1200),
+                        curve: Curves.easeInOutCubic,
+                        builder: (context, value, _) {
+                          return Text(
+                            value.toStringAsFixed(1),
+                            style: GoogleFonts.inter(
+                              fontSize: 72,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              shadows: const [
+                                Shadow(
+                                  offset: Offset(0, 2),
+                                  blurRadius: 5, // <- dikurangi agar GPU ringan
+                                  color: Colors.black26,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        bmi < 18.5
+                            ? "Kurus"
+                            : (bmi < 24.9
+                                ? "Normal"
+                                : (bmi < 29.9 ? "Gemuk" : "Obesitas")),
+                        style: GoogleFonts.inter(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white70,
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      ElevatedButton(
+                        onPressed: reset,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.indigo.shade700,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 40, vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: const Text("Hitung Ulang"),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -332,7 +334,13 @@ class _BMICalculatorState extends State<BMICalculator>
           borderRadius: BorderRadius.circular(30),
           border: Border.all(color: Colors.black, width: 1.4),
           boxShadow: isSelected
-              ? [BoxShadow(color: Colors.black26, blurRadius: 6, offset: const Offset(0, 2))]
+              ? const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 5, // sedikit dikurangi
+                    offset: Offset(0, 2),
+                  )
+                ]
               : [],
         ),
         child: Row(
@@ -358,6 +366,8 @@ class _BMICalculatorState extends State<BMICalculator>
     _inputController.dispose();
     _resultController.dispose();
     _bgController.dispose();
+    heightController.dispose();
+    weightController.dispose();
     super.dispose();
   }
 }
