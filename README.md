@@ -2,15 +2,14 @@
 
 A new Flutter project.
 
-## Getting Started
+experimen ui font tampilan dan animasi dengan flutter
 
-This project is a starting point for a Flutter application.
+dengan optimisasi dari gpt biar ga lag
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+| Area                                       | Optimalisasi             | Efek                |
+| ------------------------------------------ | ------------------------ | ------------------- |
+| `const` widgets                            | Menambah cache UI statis | Lebih cepat rebuild |
+| `RepaintBoundary`                          | Isolasi animasi berat    | FPS lebih stabil    |
+| Kurangi blur shadow                        | GPU hemat                | Render lebih ringan |
+| `late final` animation controller          | Lebih efisien di memori  | Tidak alokasi ulang |
+| Dispose controller & TextEditingController | Mencegah memory leak     | Aman di hot reload  |
